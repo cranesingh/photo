@@ -27,7 +27,7 @@
             text-align: center;
             color: #F58220;
             margin-bottom: 10px;
-            font-size: 2.5em;
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
             font-weight: 700;
         }
 
@@ -35,7 +35,7 @@
             text-align: center;
             color: #4A4A4A;
             margin-bottom: 30px;
-            font-size: 1.1em;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
         }
 
         .camera-layout {
@@ -274,14 +274,30 @@
 
         @media (max-width: 768px) {
             .camera-layout {
-                flex-direction: column;
+                flex-direction: column-reverse;
             }
             .frame-selection-sidebar {
                 width: 100%;
+                padding: 12px;
+            }
+            .frame-selection-title {
+                font-size: 0.9rem;
+                margin-bottom: 12px;
             }
             .frame-thumbnails {
                 flex-direction: row;
                 justify-content: center;
+                gap: 12px;
+            }
+            .frame-thumbnail {
+                padding: 8px;
+                max-width: 120px;
+            }
+            .frame-thumbnail img {
+                margin-bottom: 4px;
+            }
+            .frame-name {
+                font-size: 10px;
             }
         }
     </style>
