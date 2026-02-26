@@ -309,20 +309,6 @@
             .frame-name {
                 font-size: 10px;
             }
-
-            /* Expand photo area on mobile for group photos */
-            #video {
-                top: 10%;
-                left: 12%;
-                width: 76%;
-                height: 76%;
-            }
-
-            /* Adjust frame overlay to push frogs further out on mobile */
-            .frame-overlay {
-                width: 140%;
-                transform: translateX(-20%);
-            }
         }
 
         /* Landscape orientation support for mobile */
@@ -596,26 +582,11 @@
                             ctx.fillRect(0, 0, compositeCanvas.width, compositeCanvas.height);
 
                             // Draw photo in the center area using percentages (matching live camera position)
-                            // Check if mobile device for different positioning
-                            const isMobile = window.innerWidth <= 768;
-
-                            let photoX, photoY, photoWidth, photoHeight;
-
-                            if (isMobile) {
-                                // Mobile: More space for group photos
-                                // Percentages: top: 10%, left: 12%, width: 76%, height: 76%
-                                photoX = compositeCanvas.width * 0.12;      // 12%
-                                photoY = compositeCanvas.height * 0.10;     // 10%
-                                photoWidth = compositeCanvas.width * 0.76;  // 76%
-                                photoHeight = compositeCanvas.height * 0.76; // 76%
-                            } else {
-                                // Desktop: Original positioning
-                                // Percentages: top: 14%, left: 18%, width: 64%, height: 68%
-                                photoX = compositeCanvas.width * 0.18;      // 18%
-                                photoY = compositeCanvas.height * 0.14;     // 14%
-                                photoWidth = compositeCanvas.width * 0.64;  // 64%
-                                photoHeight = compositeCanvas.height * 0.68; // 68%
-                            }
+                            // Percentages: top: 14%, left: 18%, width: 64%, height: 68%
+                            const photoX = compositeCanvas.width * 0.18;      // 18%
+                            const photoY = compositeCanvas.height * 0.14;     // 14%
+                            const photoWidth = compositeCanvas.width * 0.64;  // 64%
+                            const photoHeight = compositeCanvas.height * 0.68; // 68%
 
                             // Calculate crop to fit the photo area aspect ratio
                             const photoAspect = photo.width / photo.height;
