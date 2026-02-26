@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Ashley Welcome Photo Booth</title>
     <style>
         * {
@@ -16,6 +19,12 @@
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             min-height: 100vh;
             padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Prevent zoom on double tap for iOS */
+        button, a {
+            touch-action: manipulation;
         }
 
         .container {
@@ -131,10 +140,10 @@
 
         #video {
             position: absolute;
-            top: 16.19%;
-            left: 21.92%;
-            width: 50.73%;
-            height: 56.77%;
+            top: 14%;
+            left: 18%;
+            width: 64%;
+            height: 68%;
             object-fit: cover;
             display: none;
         }
@@ -147,11 +156,12 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
+            width: 120%;
             height: 100%;
             object-fit: fill;
             pointer-events: none;
             z-index: 10;
+            transform: translateX(-10%);
         }
 
         .camera-placeholder {
@@ -298,6 +308,79 @@
             }
             .frame-name {
                 font-size: 10px;
+            }
+        }
+
+        /* Landscape orientation support for mobile */
+        @media (orientation: landscape) and (max-height: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: clamp(1.2rem, 3vw, 1.8rem);
+                margin-bottom: 5px;
+            }
+
+            .subtitle {
+                font-size: clamp(0.7rem, 1.5vw, 0.9rem);
+                margin-bottom: 15px;
+            }
+
+            .camera-layout {
+                flex-direction: row;
+                gap: 12px;
+            }
+
+            .frame-selection-sidebar {
+                width: 120px;
+                padding: 8px;
+            }
+
+            .frame-selection-title {
+                font-size: 0.75rem;
+                margin-bottom: 8px;
+            }
+
+            .frame-thumbnails {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .frame-thumbnail {
+                padding: 6px;
+                max-width: 100px;
+            }
+
+            .frame-name {
+                font-size: 9px;
+            }
+
+            .video-wrapper {
+                max-height: calc(100vh - 150px);
+            }
+
+            .controls {
+                padding: 12px;
+                margin-top: 12px;
+            }
+
+            .btn {
+                padding: 10px 24px;
+                font-size: 14px;
+                margin: 4px;
+            }
+
+            .btn-success {
+                padding: 12px 32px;
+                font-size: 16px;
+            }
+        }
+
+        /* Portrait orientation - optimize for vertical space */
+        @media (orientation: portrait) and (max-width: 768px) {
+            .video-wrapper {
+                max-height: 60vh;
             }
         }
     </style>
@@ -499,11 +582,11 @@
                             ctx.fillRect(0, 0, compositeCanvas.width, compositeCanvas.height);
 
                             // Draw photo in the center area using percentages (matching live camera position)
-                            // Percentages: top: 16.19%, left: 21.92%, width: 50.73%, height: 56.77%
-                            const photoX = compositeCanvas.width * 0.2192;      // 21.92%
-                            const photoY = compositeCanvas.height * 0.1619;     // 16.19%
-                            const photoWidth = compositeCanvas.width * 0.5073;  // 50.73%
-                            const photoHeight = compositeCanvas.height * 0.5677; // 56.77%
+                            // Percentages: top: 14%, left: 18%, width: 64%, height: 68%
+                            const photoX = compositeCanvas.width * 0.18;      // 18%
+                            const photoY = compositeCanvas.height * 0.14;     // 14%
+                            const photoWidth = compositeCanvas.width * 0.64;  // 64%
+                            const photoHeight = compositeCanvas.height * 0.68; // 68%
 
                             // Calculate crop to fit the photo area aspect ratio
                             const photoAspect = photo.width / photo.height;
@@ -580,11 +663,37 @@
             link.click();
         }
 
+        // Handle orientation changes
+        function handleOrientationChange() {
+            // Force layout recalculation
+            if (isCameraActive && video.srcObject) {
+                // Refresh video display
+                video.style.display = 'none';
+                setTimeout(() => {
+                    video.style.display = 'block';
+                }, 10);
+            }
+
+            // Log orientation for debugging
+            const orientation = window.screen.orientation?.type ||
+                               (window.innerHeight > window.innerWidth ? 'portrait' : 'landscape');
+            console.log('Orientation changed to:', orientation);
+        }
+
         // Event listeners
         openCameraBtn.addEventListener('click', openCamera);
         captureBtn.addEventListener('click', capturePhoto);
         retakeBtn.addEventListener('click', retakePhoto);
         downloadBtn.addEventListener('click', downloadPhoto);
+
+        // Listen for orientation changes
+        window.addEventListener('orientationchange', handleOrientationChange);
+        window.addEventListener('resize', handleOrientationChange);
+
+        // Screen orientation API (modern browsers)
+        if (window.screen.orientation) {
+            window.screen.orientation.addEventListener('change', handleOrientationChange);
+        }
 
         // Initialize
         initFrames();
